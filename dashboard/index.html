@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moonku Radar — Token Launch Radar</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">MOONKU RADAR</div>
+    <div class="tagline">Which pre-token protocols would be worth the most if they launched a token today?</div>
+    <nav class="nav">
+      <a href="#/" data-nav="board">Board</a>
+      <a href="#/watchlist" data-nav="watchlist">Watchlist</a>
+      <a href="#/live" data-nav="live">Live benchmark</a>
+      <a href="#/method" data-nav="method">Method</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap" id="app">
+  <section class="hero" id="hero">
+    <h1>The token launch radar</h1>
+    <p class="lede">Every protocol DefiLlama tracks, ranked by what its token would be worth at launch.
+      A protocol counts as pre-token when its record carries no token — no market cap, no CoinGecko id,
+      no symbol. That is the record's word, not proof: a protocol listed here may still have a token
+      its record does not carry.</p>
+    <div class="stats" id="stats"></div>
+  </section>
+  <section class="controls" id="controls">
+    <input id="search" type="search" placeholder="Search a protocol…" aria-label="Search protocols">
+    <select id="category" aria-label="Filter by category"><option value="">All categories</option></select>
+    <label class="check"><input type="checkbox" id="watchonly"> Watchlist only</label>
+    <span class="count" id="count"></span>
+  </section>
+  <section id="view"></section>
+  <section class="method" id="method">
+    <h2>How the radar works</h2>
+    <p><strong>The valuation is a power law, not a flat multiple.</strong> Across the 128 protocols in
+      this snapshot that already trade, market cap grows with the square root of TVL — not in proportion
+      to it — so a single multiple overvalues the big and undervalues the small. The model fits
+      <code>log(market cap) = a<sub>category</sub> + b · log(TVL)</code>, where <code>b</code> is the
+      least-squares slope over the live-token protocols (about 0.52 on this snapshot) and each category's
+      intercept is its mean residual shrunk toward the global mean with a prior weight of 8 protocols.
+      The core value of a pre-token protocol is <code>exp(a + b · log TVL)</code>.</p>
+    <p><strong>Readiness tilts the ranking.</strong> The board ranks by core value × readiness, where
+      readiness is momentum (the protocol's 7-day TVL change against its own category's median change,
+      capped at ±30 points) × maturity (saturating with age, 0.85–1.00) × chain breadth (0.92–1.00).
+      Readiness never enters the backtest: the backtest scores the valuation core alone.</p>
+    <p><strong>Backtest.</strong> Leave-one-out on the 128 live-token protocols: each protocol's market
+      cap is predicted from its TVL with that protocol left out of the fit, slope refit included.
+      Median error <span id="bt-mdape"></span>, mean error <span id="bt-mean"></span>, mean log error
+      <span id="bt-log"></span>, <span id="bt-within"></span> of predictions within 2× of the real market
+      cap. The same harness scores a flat category-median multiple at 91.3% median error, 2147.0% mean
+      error, 1.801 mean log error and 25.0% within 2× — the power law wins every column.</p>
+    <p><strong>What this is not.</strong> The board never predicts whether or when a token launches, and
+      an implied value is the model's claim about a launch at today's figures, not a price target. Farm
+      plans are generic steps derived from each protocol's category, chains, TVL and age; they are not
+      financial advice, and no step ever asks you to pay to claim anything.</p>
+    <p class="fine" id="fine"></p>
+  </section>
+</main>
+<footer class="wrap fine">Moonku Radar · built for make.fun's token-radar-01 · snapshot <span id="asof"></span></footer>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
